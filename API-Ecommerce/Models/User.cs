@@ -11,8 +11,8 @@
         public string LastToken { get; set; }
         public bool IsChecked { get; set; }
         public bool Active { get; set; }
-        public bool Excluded { get; set; }
+        public bool Deleted { get; set; }
 
-        public List<Order> Orders { get; set; }
+        public List<Product> Orders { get; set; }
     }
 }
