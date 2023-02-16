@@ -8,7 +8,7 @@ namespace API_Ecommerce.Data.Mapping
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.ToTable("Usuario");
+            builder.ToTable("User");
 
             builder.HasKey(x => x.Id);
 
@@ -51,7 +51,7 @@ namespace API_Ecommerce.Data.Mapping
                 .HasMaxLength(256);
 
             builder.Property(x => x.IsChecked)
-                .HasColumnName("IsVerification")
+                .HasColumnName("IsChecked")
                 .HasColumnType("BIT");
 
             builder.Property(x => x.Active)
@@ -59,7 +59,7 @@ namespace API_Ecommerce.Data.Mapping
                 .HasColumnType("BIT");
 
             builder.Property(x => x.Deleted)
-                .HasColumnName("Excluido")
+                .HasColumnName("Deleted")
                 .HasColumnType("BIT");
         }
     }
