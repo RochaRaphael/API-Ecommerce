@@ -7,4 +7,8 @@
     <RootNamespace>API_Ecommerce</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Mapping\" />
+  </ItemGroup>
+
 </Project>
