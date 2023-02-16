@@ -13,6 +13,6 @@
         public bool Active { get; set; }
         public bool Deleted { get; set; }
 
-        public List<Product> Orders { get; set; }
+        public List<Order> Orders { get; set; }
     }
 }
