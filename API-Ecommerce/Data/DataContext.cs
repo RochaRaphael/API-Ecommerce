@@ -14,6 +14,12 @@ namespace API_Ecommerce.Data
         public DbSet<Order> Pedidos { get; set; }
         public DbSet<Category> Categorias { get; set; }
 
-        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new UserMap());
+            modelBuilder.ApplyConfiguration(new ProductMap());
+            modelBuilder.ApplyConfiguration(new OrderMap());
+            modelBuilder.ApplyConfiguration(new CategoryMap());
+        }
     }
 }
