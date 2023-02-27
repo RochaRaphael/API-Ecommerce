@@ -17,5 +17,11 @@ namespace API_Ecommerce.Repositories
             await context.Users.AddAsync(newUser);
             await context.SaveChangesAsync();
         }
+
+        public async Task<bool> UserExistsAsync(string login)
+        {
+            return await Task.FromResult(context.Users.Any(x => x.Login == login));
+        }
+
     }
 }
