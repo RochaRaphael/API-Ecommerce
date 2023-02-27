@@ -1,4 +1,5 @@
-﻿using API_Ecommerce.Models;
+﻿using API_Ecommerce.Data.Mapping;
+using API_Ecommerce.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_Ecommerce.Data
@@ -9,10 +10,10 @@ namespace API_Ecommerce.Data
             : base(options)
         {
         }
-        public DbSet<User> Usuarios { get; set; }
-        public DbSet<Product> Produtos { get; set; }
-        public DbSet<Order> Pedidos { get; set; }
-        public DbSet<Category> Categorias { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
