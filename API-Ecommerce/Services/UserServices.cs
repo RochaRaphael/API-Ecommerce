@@ -1,6 +1,7 @@
 ﻿using API_Ecommerce.Models;
 using API_Ecommerce.Repositories;
 using API_Ecommerce.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -19,7 +20,7 @@ namespace API_Ecommerce.Services
             try
             {
                 if (await userRepositories.UserExistsAsync(user.Login))
-                    return new ResponseViewModel { Success = false, Message = "User not found" };
+                    return new ResponseViewModel { Success = false, Message = "This user already exists" };
 
                 var newUser = new User
                 {
@@ -34,9 +35,9 @@ namespace API_Ecommerce.Services
                 await userRepositories.RegisterUserAsync(newUser);
                 return new ResponseViewModel { Success = true, Message = "User successfully created" };
             }
-            catch (Exception ex)
+            catch (DbUpdateException)
             {
-                throw ex;
+                return new ResponseViewModel { Success = false, Message = "94X63 - Server failure" };
             }
         }
 
