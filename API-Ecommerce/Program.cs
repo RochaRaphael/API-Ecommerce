@@ -4,9 +4,13 @@ using API_Ecommerce.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+ConfigureMvc(builder);
+ConfigureServices(builder);
+
+builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapControllers();
 
 app.Run();
 
