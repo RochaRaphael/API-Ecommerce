@@ -10,6 +10,15 @@ app.MapGet("/", () => "Hello World!");
 
 app.Run();
 
+void ConfigureMvc(WebApplicationBuilder builder)
+{
+    builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
+}
+
 void ConfigureServices(WebApplicationBuilder builder)
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
