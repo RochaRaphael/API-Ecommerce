@@ -94,7 +94,7 @@ namespace API_Ecommerce.Controllers
             try
             {
                 var response = await userServices.DeleteUserAsync(id);
-                return Ok(response.Success);
+                return Ok(response.Message);
             }
             catch
             {
