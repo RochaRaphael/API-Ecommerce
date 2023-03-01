@@ -41,6 +41,29 @@ namespace API_Ecommerce.Services
             }
         }
 
+        public async Task<ResponseViewModel> LoginAsync(LoginViewModel model)
+        {
+            try
+            {
+                model.Password = GenerateHash(model.Password);
+                var login = await userRepositories.CorrectLoginAsync(model);
+
+                if(login == null)
+                    return new ResponseViewModel { Success = false, Message = "Login or password is wrong" };
+
+
+                //login.LastToken = tokenService.GenerateToken(login).ToString();
+                var token = userRepositories.InsertLasTokenAsync(login);
+                return new ResponseViewModel { Success = true, Message = login.LastToken };
+
+
+            }
+            catch
+            {
+                return new ResponseViewModel { Success = false, Message = "22X08 - Server failure" };
+            }
+        }
+
         public static string GenerateHash(string senha)
         {
             var md5 = MD5.Create();
