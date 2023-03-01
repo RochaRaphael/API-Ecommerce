@@ -14,6 +14,12 @@ namespace API_Ecommerce.Repositories
             this.context = context;
         }
 
+        public async Task<User> FindUserByIdAsync(int id)
+        {
+            return await context
+                .Users
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
         public async Task RegisterUserAsync(User newUser)
         {
             await context.Users.AddAsync(newUser);
@@ -27,11 +33,9 @@ namespace API_Ecommerce.Repositories
 
         public async Task<User> CorrectLoginAsync(LoginViewModel model)
         {
-            var login = await context
+            return await context
                  .Users
                  .FirstOrDefaultAsync(x => x.Login == model.Login && x.Password == model.Password);
-
-            return login;
         }
 
         public async Task<bool> InsertLasTokenAsync(User login)
