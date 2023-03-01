@@ -20,6 +20,8 @@ namespace API_Ecommerce.Services
             try
             {
                 var user = await userRepositories.FindUserByIdAsync(id);
+                if (user == null)
+                    return null;
 
                 return new ShowUserViewModel
                 {
@@ -63,7 +65,7 @@ namespace API_Ecommerce.Services
 
         
 
-            public async Task<ResponseViewModel> LoginAsync(LoginViewModel model)
+        public async Task<ResponseViewModel> LoginAsync(LoginViewModel model)
         {
             try
             {
@@ -86,7 +88,28 @@ namespace API_Ecommerce.Services
             }
         }
 
-        public static string GenerateHash(string senha)
+        public async Task<ResponseViewModel> DeleteUserAsync(int id)
+        {
+            try
+            {
+                var user = await userRepositories.FindUserByIdAsync(id);
+                if (user == null)
+                    return new ResponseViewModel { Success = false, Message = "User not found" };
+
+                var userDeleted = await userRepositories.DeleteUserAsync(user);
+                if (userDeleted)
+                    return new ResponseViewModel { Success = true, Message = "Deleted" };
+                else
+                    return new ResponseViewModel { Success = false, Message = "65X43 - Server failure" };
+            }
+            catch
+            {
+                return new ResponseViewModel { Success = false, Message = "32Y56 - Error" };
+            }
+        }
+
+
+            public static string GenerateHash(string senha)
         {
             var md5 = MD5.Create();
             byte[] bytes = System.Text.Encoding.ASCII.GetBytes(senha);
