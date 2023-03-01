@@ -15,6 +15,26 @@ namespace API_Ecommerce.Services
             this.userRepositories = userRepositories;
         }
 
+        public async Task<ShowUserViewModel> FindUserByIdAsync(int id)
+        {
+            try
+            {
+                var user = await userRepositories.FindUserByIdAsync(id);
+
+                return new ShowUserViewModel
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Active = user.Active,
+                    Deleted = user.Deleted
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
         public async Task<ResponseViewModel> RegisterUserAsync(NewUserViewModel user)
         {
             try
@@ -41,7 +61,9 @@ namespace API_Ecommerce.Services
             }
         }
 
-        public async Task<ResponseViewModel> LoginAsync(LoginViewModel model)
+        
+
+            public async Task<ResponseViewModel> LoginAsync(LoginViewModel model)
         {
             try
             {
