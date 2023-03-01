@@ -62,7 +62,7 @@ namespace API_Ecommerce.Controllers
         }
 
 
-        [HttpPost("v1/Login/")]
+        [HttpPost("v1/login/")]
         public async Task<IActionResult> LoginAsync(
             [FromBody] LoginViewModel model)
         {
@@ -83,6 +83,24 @@ namespace API_Ecommerce.Controllers
             {
                 return StatusCode(500, new ResultViewModel<string>("42X74 - Server failure"));
             }
+        }
+
+        [HttpPost("v1/login/delete/{id:int}")]
+        public async Task<IActionResult> DeleteUserAsync(
+            [FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+            try
+            {
+                var response = await userServices.DeleteUserAsync(id);
+                return Ok(response.Success);
+            }
+            catch
+            {
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+            }
+            
         }
     }
 }
