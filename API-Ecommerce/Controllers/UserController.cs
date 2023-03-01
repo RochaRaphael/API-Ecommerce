@@ -38,5 +38,29 @@ namespace API_Ecommerce.Controllers
             }
 
         }
+
+
+        [HttpPost("v1/Login")]
+        public async Task<IActionResult> LoginAsync(
+            [FromBody] LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+
+            try
+            {
+                var response = await userServices.LoginAsync(model);
+                if (response.Success)
+                    return Ok(response.Message);
+                else
+                    return StatusCode(401, new ResultViewModel<string>(response.Message));
+
+
+            }
+            catch
+            {
+                return StatusCode(500, new ResultViewModel<string>("42X74 - Server failure"));
+            }
+        }
     }
 }
