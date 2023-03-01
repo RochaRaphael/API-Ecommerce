@@ -53,5 +53,23 @@ namespace API_Ecommerce.Repositories
 
         }
 
+        public async Task<bool> DeleteUserAsync(User user)
+        {
+            try
+            {
+                user.Deleted = true;
+                user.Active = false;
+
+                context.Users.Update(user);
+                await context.SaveChangesAsync();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }
