@@ -14,7 +14,29 @@ namespace API_Ecommerce.Controllers
             this.userServices = userService;
         }
 
-        [HttpPost("v1/teste")]
+        [HttpGet("v1/accounts/{id:int}")]
+        public async Task<IActionResult> FindUserById(
+            [FromRoute] int id
+            )
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+
+            try
+            {
+                var user = await userServices.FindUserByIdAsync(id);
+                if (user == null)
+                    return NotFound("User not found");
+                
+                return Ok(new ResultViewModel<ShowUserViewModel>(user));
+            }
+            catch
+            {
+                return StatusCode(500, new ResultViewModel<string>("42X00 - Server failure"));
+            }
+        }
+
+            [HttpPost("v1/accounts/login/")]
         public async Task<IActionResult> RegisterUser(
             [FromBody] NewUserViewModel model
             )
@@ -40,7 +62,7 @@ namespace API_Ecommerce.Controllers
         }
 
 
-        [HttpPost("v1/Login")]
+        [HttpPost("v1/Login/")]
         public async Task<IActionResult> LoginAsync(
             [FromBody] LoginViewModel model)
         {
