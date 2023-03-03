@@ -1,6 +1,36 @@
-﻿namespace API_Ecommerce.Repositories
+﻿using API_Ecommerce.Data;
+using API_Ecommerce.Models;
+using API_Ecommerce.ViewModels;
+using Microsoft.EntityFrameworkCore;
+
+namespace API_Ecommerce.Repositories
 {
     public class ProductRepositories
     {
+        private readonly DataContext context;
+
+        public ProductRepositories(DataContext context)
+        {
+            this.context = context;
+        }
+
+        public async Task<Product> GetByIdAsync(int id)
+        {
+            return await context
+                .Products
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task RegisterProductAsync(Product newProduct)
+        {
+            await context.Products.AddAsync(newProduct);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<bool> ProductExistsAsync(string name)
+        {
+            return await Task.FromResult(context.Products.Any(x => x.Name == name));
+        }
+
     }
 }
