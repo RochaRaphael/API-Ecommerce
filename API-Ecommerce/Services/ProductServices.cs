@@ -35,10 +35,13 @@ namespace API_Ecommerce.Services
             }
         }
 
-        public async Task<ResponseViewModel> RegisterProductAsync(NewProductViewModel product)
+        public async Task<ResultViewModel<NewProductViewModel>> RegisterProductAsync(NewProductViewModel product)
         {
             try
             {
+                if(await productRepositories.ProductExistsAsync(product.Name) == false)
+                    return new ResultViewModel<NewProductViewModel>("This product already exists");
+
                 var productCategory = await categoryRepositories.GetByNameAsync(product.Category);
                 if (productCategory == null)
                 {
@@ -55,11 +58,11 @@ namespace API_Ecommerce.Services
                     Deleted = false
                 };
                 await productRepositories.RegisterProductAsync(newProduct);
-                return new ResponseViewModel { Success = true, Message = "Product successfully created" };
+                return new ResultViewModel<NewProductViewModel>(product);
             }
             catch (DbUpdateException)
             {
-                return new ResponseViewModel { Success = false, Message = "32X88 - Server failure" };
+                return new ResultViewModel<NewProductViewModel>("00X53 - Server failure");
             }
         }
     }

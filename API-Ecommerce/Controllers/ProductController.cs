@@ -36,5 +36,30 @@ namespace API_Ecommerce.Controllers
                 return StatusCode(500, new ResultViewModel<string>("42X00 - Server failure"));
             }
         }
+
+        [HttpPost("v1/newproduct/")]
+        public async Task<IActionResult> RegisterProduct(
+            [FromBody] NewProductViewModel model
+            )
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+
+            try
+            {
+                var newProduct = await productServices.RegisterProductAsync(model);
+
+                if (newProduct.Data != null)
+                    return Ok(new ResultViewModel<NewProductViewModel>(model));
+
+                return StatusCode(401, newProduct.Errors);
+            }
+            catch
+            {
+                return StatusCode(500, new ResultViewModel<string>("55X21 - Server failure"));
+            }
+
+        }
     }
 }
