@@ -21,6 +21,14 @@ namespace API_Ecommerce.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<int> GetProductByNameAsync(string name)
+        {
+            var product = await context
+                .Products
+                .FirstOrDefaultAsync(x => x.Name == name);
+
+            return product.Id;
+        }
         public async Task RegisterProductAsync(Product newProduct)
         {
             await context.Products.AddAsync(newProduct);
@@ -32,5 +40,17 @@ namespace API_Ecommerce.Repositories
             return await Task.FromResult(context.Products.Any(x => x.Name == name));
         }
 
+        public async Task UpdateProductAsync(NewProductViewModel updateProduct, int productId)
+        {
+            var product = await context.Products.FindAsync(productId);
+            if (product != null)
+            {
+                product.Name = updateProduct.Name;
+                product.Quantity = updateProduct.Quantity;
+
+                context.Products.Update(product);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }
