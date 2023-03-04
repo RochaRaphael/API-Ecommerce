@@ -85,7 +85,33 @@ namespace API_Ecommerce.Controllers
             }
         }
 
-        [HttpPost("v1/login/delete/{id:int}")]
+
+        [HttpPut("v1/accounts/login/")]
+        public async Task<IActionResult> UpdateUser(
+            [FromBody] NewUserViewModel model
+            )
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+
+            try
+            {
+                var newUser = await userServices.UpdateUserAsync(model);
+
+                if (newUser.Data != null)
+                    return Ok(new ResultViewModel<NewUserViewModel>(model));
+
+                return StatusCode(401, newUser.Errors);
+            }
+            catch
+            {
+                return StatusCode(500, new ResultViewModel<string>("05X04 - Server failure"));
+            }
+
+        }
+
+        [HttpDelete("v1/login/delete/{id:int}")]
         public async Task<IActionResult> DeleteUserAsync(
             [FromRoute] int id)
         {
