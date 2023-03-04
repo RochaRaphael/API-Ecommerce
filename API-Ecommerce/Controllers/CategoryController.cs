@@ -15,7 +15,7 @@ namespace API_Ecommerce.Controllers
             this.categoryServices = categoryService;
         }
 
-        [HttpGet]
+        [HttpGet("v1 / product /{id: int}")]
         public async Task<IActionResult> GetById(
             [FromRoute] int id
             )
@@ -35,6 +35,31 @@ namespace API_Ecommerce.Controllers
             {
                 return StatusCode(500, new ResultViewModel<string>("88X07 - Server failure"));
             }
+        }
+
+        [HttpPost("v1/newcategory/")]
+        public async Task<IActionResult> RegisterCategory(
+            [FromBody] string categoryName
+            )
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+
+            try
+            {
+                var newProduct = await categoryServices.RegisterCategoryAsync(categoryName);
+
+                if (newProduct.Data != null)
+                    return Ok(new ResultViewModel<NewProductViewModel>(categoryName));
+
+                return StatusCode(401, newProduct.Errors);
+            }
+            catch
+            {
+                return StatusCode(500, new ResultViewModel<string>("55X21 - Server failure"));
+            }
+
         }
     }
 }

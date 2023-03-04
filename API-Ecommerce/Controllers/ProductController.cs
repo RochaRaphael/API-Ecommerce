@@ -15,7 +15,7 @@ namespace API_Ecommerce.Controllers
             this.productServices = productService;
         }
 
-        [HttpGet]
+        [HttpGet("v1/product/{id:int}")]
         public async Task<IActionResult> GetById(
             [FromRoute] int id
             )

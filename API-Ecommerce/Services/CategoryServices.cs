@@ -30,12 +30,12 @@ namespace API_Ecommerce.Services
         }
 
 
-        public async Task<ResponseViewModel> RegisterCategoryAsync(string name)
+        public async Task<ResultViewModel<Category>> RegisterCategoryAsync(string name)
         {
             try
             {
                 if (await categoryRepositories.CategoryExistsAsync(name))
-                    return new ResponseViewModel { Success = false, Message = "This category already exists" };
+                    return new ResultViewModel<Category>("This category already exists");
 
                 var newCategory = new Category
                 {
@@ -45,11 +45,12 @@ namespace API_Ecommerce.Services
                     Deleted = false
                 };
                 await categoryRepositories.RegisterCategoryAsync(newCategory);
-                return new ResponseViewModel { Success = true, Message = "User successfully created" };
+                return new ResultViewModel<Category>(newCategory);
+
             }
             catch (DbUpdateException)
             {
-                return new ResponseViewModel { Success = false, Message = "44X85 - Server failure" };
+                return new ResultViewModel<Category>("44X85 - Server failure");
             }
         }
     }
