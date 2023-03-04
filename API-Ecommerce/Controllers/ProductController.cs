@@ -61,5 +61,28 @@ namespace API_Ecommerce.Controllers
             }
 
         }
-    }
+
+        [HttpPut("v1/product/update/")]
+        public async Task<IActionResult> UpdateProduct(
+            [FromBody] NewProductViewModel model
+            )
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+
+            try
+            {
+                var updateProduct = await productServices.UpdateProductAsync(model);
+
+                if (updateProduct.Data != null)
+                    return Ok(new ResultViewModel<NewProductViewModel>(model));
+
+                return StatusCode(401, updateProduct.Errors);
+            }
+            catch
+            {
+                return StatusCode(500, new ResultViewModel<string>("33X46 - Server failure"));
+            }
+        }
 }

@@ -86,7 +86,7 @@ namespace API_Ecommerce.Controllers
         }
 
 
-        [HttpPut("v1/accounts/login/")]
+        [HttpPut("v1/accounts/update")]
         public async Task<IActionResult> UpdateUser(
             [FromBody] NewUserViewModel model
             )
@@ -97,12 +97,12 @@ namespace API_Ecommerce.Controllers
 
             try
             {
-                var newUser = await userServices.UpdateUserAsync(model);
+                var updateUser = await userServices.UpdateUserAsync(model);
 
-                if (newUser.Data != null)
+                if (updateUser.Data != null)
                     return Ok(new ResultViewModel<NewUserViewModel>(model));
 
-                return StatusCode(401, newUser.Errors);
+                return StatusCode(401, updateUser.Errors);
             }
             catch
             {
