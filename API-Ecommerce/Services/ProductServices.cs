@@ -65,5 +65,22 @@ namespace API_Ecommerce.Services
                 return new ResultViewModel<NewProductViewModel>("00X53 - Server failure");
             }
         }
+
+        public async Task<ResultViewModel<NewProductViewModel>> UpdateProductAsync(NewProductViewModel updateProduct)
+        {
+            try
+            {
+                var id = await productRepositories.GetProductByNameAsync(updateProduct.Name);
+                if (id == null)
+                    return new ResultViewModel<NewProductViewModel>("60X45 - Product not found");
+
+                await productRepositories.UpdateProductAsync(updateProduct, id);
+                return new ResultViewModel<NewProductViewModel>(updateProduct);
+            }
+            catch
+            {
+                return new ResultViewModel<NewProductViewModel>("11Y65 - Server failure");
+            }
+        }
     }
 }
