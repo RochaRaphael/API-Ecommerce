@@ -53,5 +53,22 @@ namespace API_Ecommerce.Services
                 return new ResultViewModel<Category>("44X85 - Server failure");
             }
         }
+
+        public async Task<ResultViewModel<Category>> UpdateCategoryAsync(string categoryName, int id)
+        {
+            try
+            {
+                var category = await categoryRepositories.GetByIdAsync(id);
+                if (category == null)
+                    return new ResultViewModel<Category>("90X88 - Product not found");
+
+                await categoryRepositories.UpdateCategoryAsync(categoryName, id);
+                return new ResultViewModel<Category>(categoryName);
+            }
+            catch
+            {
+                return new ResultViewModel<Category>("21X61 - Server failure");
+            }
+        }
     }
 }
