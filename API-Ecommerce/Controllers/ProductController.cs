@@ -62,7 +62,7 @@ namespace API_Ecommerce.Controllers
 
         }
 
-        [HttpPut("v1/product/update/")]
+        [HttpPut("v1/product/update/{int:id}")]
         public async Task<IActionResult> UpdateProduct(
             [FromBody] NewProductViewModel model,
             [FromRoute] int id
