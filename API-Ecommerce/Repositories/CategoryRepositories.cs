@@ -36,15 +36,14 @@ namespace API_Ecommerce.Repositories
                 .FirstOrDefaultAsync(x => x.Name == name);
         }
 
-        public async Task UpdateCategoryAsync( updatePr, int productId)
+        public async Task UpdateCategoryAsync( string updateCategory, int categoryId)
         {
-            var product = await context.Products.FindAsync(productId);
-            if (product != null)
+            var category = await context.Categories.FindAsync(categoryId);
+            if (category != null)
             {
-                product.Name = updateProduct.Name;
-                product.Quantity = updateProduct.Quantity;
+                category.Name = updateCategory;
 
-                context.Products.Update(product);
+                context.Categories.Update(category);
                 await context.SaveChangesAsync();
             }
         }
