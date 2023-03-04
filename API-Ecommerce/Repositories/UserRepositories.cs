@@ -20,6 +20,14 @@ namespace API_Ecommerce.Repositories
                 .Users
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<int> GetUserByLoginAsync(string login)
+        {
+            var user = await context
+                .Users
+                .FirstOrDefaultAsync(x => x.Login == login);
+            return user.Id;
+        }
         public async Task RegisterUserAsync(User newUser)
         {
             await context.Users.AddAsync(newUser);
@@ -53,6 +61,18 @@ namespace API_Ecommerce.Repositories
 
         }
 
+        public async Task UpdateUserAsync(NewUserViewModel updateUser, int userId)
+        {
+            var user = await context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                user.Name = updateUser.Name;
+                user.Email = updateUser.Email;
+
+                context.Users.Update(user);
+                await context.SaveChangesAsync();
+            }
+        }
         public async Task<bool> DeleteUserAsync(User user)
         {
             try
@@ -70,6 +90,8 @@ namespace API_Ecommerce.Repositories
                 return false;
             }
         }
+
+        
 
     }
 }
