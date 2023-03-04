@@ -86,9 +86,10 @@ namespace API_Ecommerce.Controllers
         }
 
 
-        [HttpPut("v1/accounts/update")]
+        [HttpPut("v1/accounts/update/{int:id}")]
         public async Task<IActionResult> UpdateUser(
-            [FromBody] NewUserViewModel model
+            [FromBody] NewUserViewModel model,
+            [FromRoute] int id
             )
         {
 
@@ -97,7 +98,7 @@ namespace API_Ecommerce.Controllers
 
             try
             {
-                var updateUser = await userServices.UpdateUserAsync(model);
+                var updateUser = await userServices.UpdateUserAsync(model, id);
 
                 if (updateUser.Data != null)
                     return Ok(new ResultViewModel<NewUserViewModel>(model));

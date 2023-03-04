@@ -64,7 +64,8 @@ namespace API_Ecommerce.Controllers
 
         [HttpPut("v1/product/update/")]
         public async Task<IActionResult> UpdateProduct(
-            [FromBody] NewProductViewModel model
+            [FromBody] NewProductViewModel model,
+            [FromRoute] int id
             )
         {
 
@@ -73,7 +74,7 @@ namespace API_Ecommerce.Controllers
 
             try
             {
-                var updateProduct = await productServices.UpdateProductAsync(model);
+                var updateProduct = await productServices.UpdateProductAsync(model, id);
 
                 if (updateProduct.Data != null)
                     return Ok(new ResultViewModel<NewProductViewModel>(model));
