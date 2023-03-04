@@ -88,6 +88,23 @@ namespace API_Ecommerce.Services
             }
         }
 
+        public async Task<ResultViewModel<NewUserViewModel>> UpdateUserAsync(NewUserViewModel updateUser)
+        {
+            try
+            {
+                var id = await userRepositories.GetUserByLoginAsync(updateUser.Login);
+                if(id == null)
+                    return new ResultViewModel<NewUserViewModel>("60X45 - User not found");
+
+                await userRepositories.UpdateUserAsync(updateUser, id);
+                return new ResultViewModel<NewUserViewModel>(updateUser);
+            }
+            catch
+            {
+                return new ResultViewModel<NewUserViewModel>("80X25 - Server failure");
+            }
+        }
+
         public async Task<ResponseViewModel> DeleteUserAsync(int id)
         {
             try
