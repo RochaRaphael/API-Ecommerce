@@ -88,12 +88,12 @@ namespace API_Ecommerce.Services
             }
         }
 
-        public async Task<ResultViewModel<NewUserViewModel>> UpdateUserAsync(NewUserViewModel updateUser)
+        public async Task<ResultViewModel<NewUserViewModel>> UpdateUserAsync(NewUserViewModel updateUser, int id)
         {
             try
             {
-                var id = await userRepositories.GetUserByLoginAsync(updateUser.Login);
-                if(id == null)
+                var user = await userRepositories.FindUserByIdAsync(id);
+                if(user == null)
                     return new ResultViewModel<NewUserViewModel>("60X45 - User not found");
 
                 await userRepositories.UpdateUserAsync(updateUser, id);

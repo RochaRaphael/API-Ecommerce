@@ -66,12 +66,12 @@ namespace API_Ecommerce.Services
             }
         }
 
-        public async Task<ResultViewModel<NewProductViewModel>> UpdateProductAsync(NewProductViewModel updateProduct)
+        public async Task<ResultViewModel<NewProductViewModel>> UpdateProductAsync(NewProductViewModel updateProduct, int id)
         {
             try
             {
-                var id = await productRepositories.GetProductByNameAsync(updateProduct.Name);
-                if (id == null)
+                var product = await productRepositories.GetByIdAsync(id);
+                if (product == null)
                     return new ResultViewModel<NewProductViewModel>("60X45 - Product not found");
 
                 await productRepositories.UpdateProductAsync(updateProduct, id);

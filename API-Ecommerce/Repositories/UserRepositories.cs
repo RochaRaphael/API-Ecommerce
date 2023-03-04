@@ -20,14 +20,6 @@ namespace API_Ecommerce.Repositories
                 .Users
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
-
-        public async Task<int> GetUserByLoginAsync(string login)
-        {
-            var user = await context
-                .Users
-                .FirstOrDefaultAsync(x => x.Login == login);
-            return user.Id;
-        }
         public async Task RegisterUserAsync(User newUser)
         {
             await context.Users.AddAsync(newUser);

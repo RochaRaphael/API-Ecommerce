@@ -20,15 +20,6 @@ namespace API_Ecommerce.Repositories
                 .Products
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
-
-        public async Task<int> GetProductByNameAsync(string name)
-        {
-            var product = await context
-                .Products
-                .FirstOrDefaultAsync(x => x.Name == name);
-
-            return product.Id;
-        }
         public async Task RegisterProductAsync(Product newProduct)
         {
             await context.Products.AddAsync(newProduct);

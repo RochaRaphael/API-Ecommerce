@@ -35,5 +35,18 @@ namespace API_Ecommerce.Repositories
                 .Categories
                 .FirstOrDefaultAsync(x => x.Name == name);
         }
+
+        public async Task UpdateCategoryAsync( updatePr, int productId)
+        {
+            var product = await context.Products.FindAsync(productId);
+            if (product != null)
+            {
+                product.Name = updateProduct.Name;
+                product.Quantity = updateProduct.Quantity;
+
+                context.Products.Update(product);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }

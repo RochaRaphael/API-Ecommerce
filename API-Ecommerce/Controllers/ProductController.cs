@@ -85,4 +85,5 @@ namespace API_Ecommerce.Controllers
                 return StatusCode(500, new ResultViewModel<string>("33X46 - Server failure"));
             }
         }
+    }
 }
