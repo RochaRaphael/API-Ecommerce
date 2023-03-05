@@ -105,7 +105,6 @@ namespace API_Ecommerce.Controllers
             {
                 return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
             }
-
         }
     }
 }

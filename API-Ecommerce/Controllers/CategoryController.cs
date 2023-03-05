@@ -85,5 +85,26 @@ namespace API_Ecommerce.Controllers
                 return StatusCode(500, new ResultViewModel<string>("19X33 - Server failure"));
             }
         }
+
+        [HttpDelete("v1/category/delete/{id:int}")]
+        public async Task<IActionResult> DeleteCategoryAsync(
+            [FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+            try
+            {
+                var result = await categoryServices.DeleteCategoryAsync(id);
+                if (result.Data == true)
+                    return Ok("Category deleted");
+                else
+                    return StatusCode(404, result.Errors);
+            }
+            catch
+            {
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+            }
+
+        }
     }
 }
