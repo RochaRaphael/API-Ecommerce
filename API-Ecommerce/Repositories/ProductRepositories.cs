@@ -43,5 +43,23 @@ namespace API_Ecommerce.Repositories
                 await context.SaveChangesAsync();
             }
         }
+
+        public async Task<bool> DeleteProductAsync(Product product)
+        {
+            try
+            {
+                product.Deleted = true;
+                product.Active = false;
+
+                context.Products.Update(product);
+                await context.SaveChangesAsync();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
