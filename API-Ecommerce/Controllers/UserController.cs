@@ -120,8 +120,11 @@ namespace API_Ecommerce.Controllers
                 return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
             try
             {
-                var response = await userServices.DeleteUserAsync(id);
-                return Ok(response.Message);
+                var result = await userServices.DeleteUserAsync(id);
+                if(result.Data == true)
+                    return Ok("User deleted");
+                else
+                    return StatusCode(404, result.Errors);
             }
             catch
             {
