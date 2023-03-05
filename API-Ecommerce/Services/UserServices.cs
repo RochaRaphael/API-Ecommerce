@@ -105,23 +105,23 @@ namespace API_Ecommerce.Services
             }
         }
 
-        public async Task<ResponseViewModel> DeleteUserAsync(int id)
+        public async Task<ResultViewModel<bool>> DeleteUserAsync(int id)
         {
             try
             {
                 var user = await userRepositories.FindUserByIdAsync(id);
                 if (user == null)
-                    return new ResponseViewModel { Success = false, Message = "User not found" };
+                    return new ResultViewModel<bool>(false, new List<string> { "User not found" });
 
                 var userDeleted = await userRepositories.DeleteUserAsync(user);
                 if (userDeleted)
-                    return new ResponseViewModel { Success = true, Message = "Deleted" };
+                    return new ResultViewModel<bool>(true);
                 else
-                    return new ResponseViewModel { Success = false, Message = "65X43 - Server failure" };
+                    return new ResultViewModel<bool>(false, new List<string> {"65X43 - Server failure"});
             }
             catch
             {
-                return new ResponseViewModel { Success = false, Message = "32Y56 - Error" };
+                return new ResultViewModel<bool>(false, new List<string> { "32Y56 - Error"});
             }
         }
 

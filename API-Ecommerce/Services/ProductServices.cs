@@ -82,5 +82,25 @@ namespace API_Ecommerce.Services
                 return new ResultViewModel<NewProductViewModel>("11Y65 - Server failure");
             }
         }
+
+        public async Task<ResultViewModel<bool>> DeleteProductAsync(int id)
+        {
+            try
+            {
+                var product = await productRepositories.GetByIdAsync(id);
+                if (product == null)
+                    return new ResultViewModel<bool>(false, new List<string> {"Product not found"});
+
+                var productDeleted = await productRepositories.DeleteProductAsync(product);
+                if (productDeleted)
+                    return new ResultViewModel<bool>(true);
+                else
+                    return new ResultViewModel<bool>(false, new List<string> { "98X23 - Server failure" });
+            }
+            catch
+            {
+                return new ResultViewModel<bool>(false, new List<string> { "78X27 - Error" });
+            }
+        }
     }
 }
