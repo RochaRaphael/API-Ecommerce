@@ -2,7 +2,7 @@
 
 Tecnologias usadas
 - Enitity
-- Rest
+- API Rest
 - JWT
 - RabbitMQ
 - Redis
