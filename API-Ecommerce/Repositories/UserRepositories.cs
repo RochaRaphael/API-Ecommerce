@@ -42,8 +42,8 @@ namespace API_Ecommerce.Repositories
         {
             try
             {
-                //context.Users.Update(login);
-                //await context.SaveChangesAsync();
+                context.Users.Update(login);
+                await context.SaveChangesAsync();
                 return true;
             }
             catch
