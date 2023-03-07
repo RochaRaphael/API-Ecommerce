@@ -24,7 +24,7 @@ namespace API_Ecommerce.Controllers
 
             try
             {
-                var user = await userServices.FindUserByIdAsync(id);
+                var user = await userServices.GetByIdAsync(id);
                 if (user == null)
                     return NotFound("User not found");
                 
