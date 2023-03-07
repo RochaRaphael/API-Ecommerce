@@ -15,11 +15,11 @@ namespace API_Ecommerce.Services
             this.userRepositories = userRepositories;
         }
 
-        public async Task<ShowUserViewModel> FindUserByIdAsync(int id)
+        public async Task<ShowUserViewModel> GetByIdAsync(int id)
         {
             try
             {
-                var user = await userRepositories.FindUserByIdAsync(id);
+                var user = await userRepositories.GetByIdAsync(id);
                 if (user == null)
                     return null;
 
@@ -92,7 +92,7 @@ namespace API_Ecommerce.Services
         {
             try
             {
-                var user = await userRepositories.FindUserByIdAsync(id);
+                var user = await userRepositories.GetByIdAsync(id);
                 if(user == null)
                     return new ResultViewModel<NewUserViewModel>("60X45 - User not found");
 
@@ -109,7 +109,7 @@ namespace API_Ecommerce.Services
         {
             try
             {
-                var user = await userRepositories.FindUserByIdAsync(id);
+                var user = await userRepositories.GetByIdAsync(id);
                 if (user == null)
                     return new ResultViewModel<bool>(false, new List<string> { "User not found" });
 
@@ -129,7 +129,7 @@ namespace API_Ecommerce.Services
             public static string GenerateHash(string senha)
         {
             var md5 = MD5.Create();
-            byte[] bytes = System.Text.Encoding.ASCII.GetBytes(senha);
+            byte[] bytes = Encoding.ASCII.GetBytes(senha);
             byte[] hash = md5.ComputeHash(bytes);
 
             StringBuilder sb = new StringBuilder();
