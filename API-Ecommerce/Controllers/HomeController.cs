@@ -2,6 +2,8 @@
 
 namespace API_Ecommerce.Controllers
 {
+    [ApiController]
+    [Route("")]
     public class HomeController : Controller
     {
         [HttpGet("")]

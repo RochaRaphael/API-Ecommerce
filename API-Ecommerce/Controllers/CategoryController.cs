@@ -15,7 +15,7 @@ namespace API_Ecommerce.Controllers
             this.categoryServices = categoryService;
         }
 
-        [HttpGet("v1 / product /{id: int}")]
+        [HttpGet("v1/category/{id:int}")]
         public async Task<IActionResult> GetById(
             [FromRoute] int id
             )
@@ -48,12 +48,12 @@ namespace API_Ecommerce.Controllers
 
             try
             {
-                var newProduct = await categoryServices.RegisterCategoryAsync(categoryName);
+                var result = await categoryServices.RegisterCategoryAsync(categoryName);
 
-                if (newProduct.Data != null)
-                    return Ok(new ResultViewModel<NewProductViewModel>(categoryName));
+                if (result.Data != null)
+                    return Ok(new ResultViewModel<Category>(result.Data));
 
-                return StatusCode(401, newProduct.Errors);
+                return StatusCode(401, result.Errors);
             }
             catch
             {
@@ -61,10 +61,10 @@ namespace API_Ecommerce.Controllers
             }
         }
 
-        [HttpPut("v1category/update/{int:id}")]
+        [HttpPut("v1/category/update/{id:int}")]
         public async Task<IActionResult> UpdateCategory(
-            [FromBody] string model,
-            [FromRoute] int id
+            [FromRoute] int id,
+            [FromBody] string model          
             )
         {
 

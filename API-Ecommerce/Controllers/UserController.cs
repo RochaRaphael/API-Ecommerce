@@ -27,7 +27,7 @@ namespace API_Ecommerce.Controllers
                 var user = await userServices.GetByIdAsync(id);
                 if (user == null)
                     return NotFound("User not found");
-                
+
                 return Ok(new ResultViewModel<ShowUserViewModel>(user));
             }
             catch
@@ -36,17 +36,17 @@ namespace API_Ecommerce.Controllers
             }
         }
 
-            [HttpPost("v1/accounts/login/")]
+        [HttpPost("v1/accounts/login/")]
         public async Task<IActionResult> RegisterUser(
-            [FromBody] NewUserViewModel model
-            )
+        [FromBody] NewUserViewModel model
+        )
         {
-            
+
             if (!ModelState.IsValid)
                 return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
 
             try
-            {    
+            {
                 var newUser = await userServices.RegisterUserAsync(model);
 
                 if (newUser.Success)
@@ -86,10 +86,10 @@ namespace API_Ecommerce.Controllers
         }
 
 
-        [HttpPut("v1/accounts/update/{int:id}")]
+        [HttpPut("v1/accounts/update/{id:int}")]
         public async Task<IActionResult> UpdateUser(
-            [FromBody] NewUserViewModel model,
-            [FromRoute] int id
+            [FromRoute] int id,
+            [FromBody] NewUserViewModel model           
             )
         {
 
@@ -121,7 +121,7 @@ namespace API_Ecommerce.Controllers
             try
             {
                 var result = await userServices.DeleteUserAsync(id);
-                if(result.Data == true)
+                if (result.Data == true)
                     return Ok("User deleted");
                 else
                     return StatusCode(404, result.Errors);
@@ -130,7 +130,7 @@ namespace API_Ecommerce.Controllers
             {
                 return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
             }
-            
+
         }
     }
 }

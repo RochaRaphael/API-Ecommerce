@@ -48,12 +48,12 @@ namespace API_Ecommerce.Controllers
 
             try
             {
-                var newProduct = await productServices.RegisterProductAsync(model);
+                var result = await productServices.RegisterProductAsync(model);
 
-                if (newProduct.Data != null)
+                if (result.Data != null)
                     return Ok(new ResultViewModel<NewProductViewModel>(model));
 
-                return StatusCode(401, newProduct.Errors);
+                return StatusCode(401, result.Errors);
             }
             catch
             {
@@ -62,13 +62,12 @@ namespace API_Ecommerce.Controllers
 
         }
 
-        [HttpPut("v1/product/update/{int:id}")]
+        [HttpPut("v1/product/update/{id:int}")]
         public async Task<IActionResult> UpdateProduct(
-            [FromBody] NewProductViewModel model,
-            [FromRoute] int id
+            [FromRoute] int id,
+            [FromBody] NewProductViewModel model          
             )
         {
-
             if (!ModelState.IsValid)
                 return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
 
