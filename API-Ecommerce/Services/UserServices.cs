@@ -1,6 +1,7 @@
 ﻿using API_Ecommerce.Models;
 using API_Ecommerce.Repositories;
 using API_Ecommerce.ViewModels;
+using Konscious.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
@@ -10,6 +11,10 @@ namespace API_Ecommerce.Services
     public class UserServices
     {
         private readonly UserRepositories userRepositories;
+        // Define os parâmetros do algoritmo Argon2
+        private const int SaltSize = 16;
+        private const int HashSize = 32;
+        private const int Iterations = 10000;
         public UserServices(UserRepositories userRepositories)
         {
             this.userRepositories = userRepositories;
@@ -27,9 +32,11 @@ namespace API_Ecommerce.Services
                 {
                     Id = user.Id,
                     Name = user.Name,
+                    Login = user.Login,
                     Email = user.Email,
                     Active = user.Active,
                     Deleted = user.Deleted
+                    
                 };
             }
             catch
@@ -125,19 +132,48 @@ namespace API_Ecommerce.Services
             }
         }
 
-
-            public static string GenerateHash(string senha)
+        public static string GenerateHash(string password)
         {
-            var md5 = MD5.Create();
-            byte[] bytes = Encoding.ASCII.GetBytes(senha);
-            byte[] hash = md5.ComputeHash(bytes);
 
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < hash.Length; i++)
+            // Gera uma chave de sal aleatória
+            byte[] salt = new byte[SaltSize];
+            using (var rng = RandomNumberGenerator.Create())
             {
-                sb.Append(hash[i].ToString("X2"));
+                rng.GetBytes(salt);
             }
-            return sb.ToString();
+
+            // Calcula o hash da senha usando Argon2
+            byte[] hash = new byte[HashSize];
+            using (var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password)))
+            {
+                argon2.Salt = salt;
+                argon2.DegreeOfParallelism = 4;
+                argon2.Iterations = Iterations;
+                argon2.MemorySize = 1024 * 1024; // 1 GB
+
+                hash = argon2.GetBytes(HashSize);
+            }
+
+            // Concatena o sal e o hash em uma string
+            byte[] hashBytes = new byte[SaltSize + HashSize];
+            Array.Copy(salt, 0, hashBytes, 0, SaltSize);
+            Array.Copy(hash, 0, hashBytes, SaltSize, HashSize);
+            return Convert.ToBase64String(hashBytes);
+
         }
+
+        //public static string GenerateHash(string senha)
+        //{
+        //    var md5 = MD5.Create();
+        //    byte[] bytes = Encoding.ASCII.GetBytes(senha);
+        //    byte[] hash = md5.ComputeHash(bytes);
+
+        //    StringBuilder sb = new StringBuilder();
+        //    for (int i = 0; i < hash.Length; i++)
+        //    {
+        //        sb.Append(hash[i].ToString("X2"));
+        //    }
+        //    return sb.ToString();
+        //}
     }
 }

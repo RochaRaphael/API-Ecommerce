@@ -39,7 +39,7 @@ namespace API_Ecommerce.Services
         {
             try
             {
-                if(await productRepositories.ProductExistsAsync(product.Name) == false)
+                if (await productRepositories.ProductExistsAsync(product.Name) == true)
                     return new ResultViewModel<NewProductViewModel>("This product already exists");
 
                 var productCategory = await categoryRepositories.GetByNameAsync(product.Category);
@@ -48,12 +48,13 @@ namespace API_Ecommerce.Services
                     await categoryServices.RegisterCategoryAsync(product.Category);
                     productCategory = await categoryRepositories.GetByNameAsync(product.Category);
                 }
-                    
+
                 var newProduct = new Product
                 {
                     Name = product.Name,
                     Url = $"/product/{product.Name}/",
                     Quantity = product.Quantity,
+                    Category = productCategory,
                     Active = true,
                     Deleted = false
                 };
@@ -89,7 +90,7 @@ namespace API_Ecommerce.Services
             {
                 var product = await productRepositories.GetByIdAsync(id);
                 if (product == null)
-                    return new ResultViewModel<bool>(false, new List<string> {"Product not found"});
+                    return new ResultViewModel<bool>(false, new List<string> { "Product not found" });
 
                 var productDeleted = await productRepositories.DeleteProductAsync(product);
                 if (productDeleted)
