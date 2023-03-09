@@ -61,6 +61,10 @@ namespace API_Ecommerce.Data.Mapping
             builder.Property(x => x.Deleted)
                 .HasColumnName("Deleted")
                 .HasColumnType("BIT");
+
+            builder.Property(x => x.Salt)
+                .HasColumnName("Salt")
+                .HasColumnType("NVARCHAR(MAX)");
         }
     }
 }
