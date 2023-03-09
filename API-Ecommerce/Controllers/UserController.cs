@@ -36,7 +36,7 @@ namespace API_Ecommerce.Controllers
             }
         }
 
-        [HttpPost("v1/accounts/login/")]
+        [HttpPost("v1/newaccount/")]
         public async Task<IActionResult> RegisterUser(
         [FromBody] NewUserViewModel model
         )
@@ -47,12 +47,12 @@ namespace API_Ecommerce.Controllers
 
             try
             {
-                var newUser = await userServices.RegisterUserAsync(model);
+                var response = await userServices.RegisterUserAsync(model);
 
-                if (newUser.Success)
-                    return Ok(new ResultViewModel<NewUserViewModel>(model));
+                if (response.Success)
+                    return Ok(response.Message);
 
-                return StatusCode(401, newUser.Message);
+                return StatusCode(401, response.Message);
             }
             catch
             {
