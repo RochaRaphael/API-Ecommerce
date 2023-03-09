@@ -4,6 +4,7 @@ using API_Ecommerce.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_Ecommerce.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230309180817_MigrationsWithSalt")]
+    partial class MigrationsWithSalt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,7 +69,7 @@ namespace API_Ecommerce.Migrations
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("DATE")
-                        .HasDefaultValue(new DateTime(2023, 3, 9, 19, 18, 52, 143, DateTimeKind.Utc).AddTicks(9283))
+                        .HasDefaultValue(new DateTime(2023, 3, 9, 18, 8, 17, 630, DateTimeKind.Utc).AddTicks(9853))
                         .HasColumnName("OrderDate");
 
                     b.Property<int>("UserId")
@@ -170,9 +173,9 @@ namespace API_Ecommerce.Migrations
                         .HasColumnType("VARCHAR")
                         .HasColumnName("Password");
 
-                    b.Property<string>("Salt")
+                    b.Property<byte[]>("Salt")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR(MAX)")
+                        .HasColumnType("VARBINARY")
                         .HasColumnName("Salt");
 
                     b.Property<string>("VerificationKey")
