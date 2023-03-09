@@ -13,5 +13,7 @@ namespace API_Ecommerce.ViewModels
         public string Email { get; set; }
         [Required(ErrorMessage = "Enter the senha")]
         public string Password { get; set; }
+
+        public string? Salt { get; set; }
     }
 }
