@@ -8,13 +8,14 @@ using System.Text;
 
 namespace API_Ecommerce.Services
 {
+    public class Password
+    {
+        public string Hash { get; set; }
+        public string Salt { get; set; }
+    }
     public class UserServices
     {
         private readonly UserRepositories userRepositories;
-        // Define os parâmetros do algoritmo Argon2
-        private const int SaltSize = 16;
-        private const int HashSize = 32;
-        private const int Iterations = 10000;
         public UserServices(UserRepositories userRepositories)
         {
             this.userRepositories = userRepositories;
@@ -44,25 +45,29 @@ namespace API_Ecommerce.Services
                 return null;
             }
         }
-        public async Task<ResponseViewModel> RegisterUserAsync(NewUserViewModel user)
+        public async Task<ResponseViewModel> RegisterUserAsync(NewUserViewModel model)
         {
             try
             {
-                if (await userRepositories.UserExistsAsync(user.Login))
+                if (await userRepositories.UserExistsAsync(model.Login))
                     return new ResponseViewModel { Success = false, Message = "This user already exists" };
 
+                var hashSalt = GenerateHash(model.Password);
+                model.Password = hashSalt.Hash;
+                model.Salt = hashSalt.Salt;
                 var newUser = new User
                 {
-                    Name = user.Name,
-                    Login = user.Login,
-                    Email = user.Email,
-                    Password = GenerateHash(user.Password),
+                    Name = model.Name,
+                    Login = model.Login,
+                    Email = model.Email,
+                    Password = hashSalt.Hash,
+                    Salt = hashSalt.Salt,
                     Active = true,
                     Deleted = false,
                     VerificationKey = Guid.NewGuid().ToString()
                 };
                 await userRepositories.RegisterUserAsync(newUser);
-                return new ResponseViewModel { Success = true, Message = "User successfully created" };
+                return new ResponseViewModel { Success = true, Message = "User successfully created"};
             }
             catch (DbUpdateException)
             {
@@ -76,7 +81,9 @@ namespace API_Ecommerce.Services
         {
             try
             {
-                model.Password = GenerateHash(model.Password);
+                var user = await userRepositories.GetByLoginAsync(model.Login);
+                model.Password = GenerateHash(model.Password, user.Salt).Hash;
+
                 var login = await userRepositories.CorrectLoginAsync(model);
 
                 if(login == null)
@@ -85,7 +92,7 @@ namespace API_Ecommerce.Services
 
                 //login.LastToken = tokenService.GenerateToken(login).ToString();
                 var token = userRepositories.InsertLasTokenAsync(login);
-                return new ResponseViewModel { Success = true, Message = login.LastToken };
+                return new ResponseViewModel { Success = true, Message = "login.LastToken" };
 
 
             }
@@ -132,33 +139,60 @@ namespace API_Ecommerce.Services
             }
         }
 
-        public static string GenerateHash(string password)
+
+        private static Password GenerateHash(string password)
         {
+            int saltSize = 16; // Define o tamanho do salt em bytes
+            int hashSize = 32; // Define o tamanho do hash em bytes
 
-            // Gera uma chave de sal aleatória
-            byte[] salt = new byte[SaltSize];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(salt);
-            }
+            var salt = new byte[saltSize]; // Cria um array de bytes para o salt
+            var rng = new RNGCryptoServiceProvider(); // Cria um gerador de números aleatórios criptográficos
+            rng.GetBytes(salt); // Gera um salt aleatório usando o RNG criptográfico
 
-            // Calcula o hash da senha usando Argon2
-            byte[] hash = new byte[HashSize];
-            using (var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password)))
-            {
-                argon2.Salt = salt;
-                argon2.DegreeOfParallelism = 4;
-                argon2.Iterations = Iterations;
-                argon2.MemorySize = 1024 * 1024; // 1 GB
+            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password)); // Cria um objeto Argon2id usando a senha como entrada
 
-                hash = argon2.GetBytes(HashSize);
-            }
+            argon2.Salt = salt; // Define o salt para o objeto Argon2id
+            argon2.DegreeOfParallelism = 8; // Define o grau de paralelismo para 8
+            argon2.Iterations = 4; // Define o número de iterações para 4
+            argon2.MemorySize = 1024 * 1024; // Define o tamanho da memória em bytes para 1 GB
 
-            // Concatena o sal e o hash em uma string
-            byte[] hashBytes = new byte[SaltSize + HashSize];
-            Array.Copy(salt, 0, hashBytes, 0, SaltSize);
-            Array.Copy(hash, 0, hashBytes, SaltSize, HashSize);
-            return Convert.ToBase64String(hashBytes);
+            byte[] hash = argon2.GetBytes(hashSize); // Gera o hash da senha usando o objeto Argon2id
+
+            byte[] hashBytes = new byte[saltSize + hashSize]; // Cria um array de bytes para armazenar o salt e o hash
+            Array.Copy(salt, 0, hashBytes, 0, saltSize); // Copia o salt para o início do array de bytes
+            Array.Copy(hash, 0, hashBytes, saltSize, hashSize); // Copia o hash para o final do array de bytes
+
+            // Cria um objeto Password que contém o hash e o salt como strings Base64
+            Password hashSalt = new Password { Hash = Convert.ToBase64String(hashBytes), 
+                                               Salt = Convert.ToBase64String(salt) };
+            
+            return hashSalt; // Retorna o objeto Password
+
+        }
+
+
+        private static Password GenerateHash(string password, string saltString)
+        {
+            byte[] salt = Convert.FromBase64String(saltString);
+            int hashSize = 32;
+            int saltSize = 16;
+
+            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password));
+
+            argon2.Salt = salt;
+            argon2.DegreeOfParallelism = 8; // four cores
+            argon2.Iterations = 4;
+            argon2.MemorySize = 1024 * 1024; // 1 GB
+
+            byte[] hash = argon2.GetBytes(hashSize);
+
+            byte[] hashBytes = new byte[saltSize + hashSize];
+            Array.Copy(salt, 0, hashBytes, 0, saltSize);
+            Array.Copy(hash, 0, hashBytes, saltSize, hashSize);
+
+            Password hashSalt = new Password { Hash = Convert.ToBase64String(hashBytes), 
+                                               Salt = Convert.ToBase64String(salt) };
+            return hashSalt;
 
         }
 
