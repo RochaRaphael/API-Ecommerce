@@ -30,11 +30,19 @@ namespace API_Ecommerce.Repositories
         {
             return await Task.FromResult(context.Users.Any(x => x.Login == login));
         }
-
-        public async Task<User> CorrectLoginAsync(LoginViewModel model)
+        public async Task<User> GetByLoginAsync(string login)
         {
             return await context
                  .Users
+                 .AsNoTracking()
+                 .FirstOrDefaultAsync(x => x.Login == login);
+        }
+
+            public async Task<User> CorrectLoginAsync(LoginViewModel model)
+        {
+            return await context
+                 .Users
+                 .AsNoTracking()
                  .FirstOrDefaultAsync(x => x.Login == model.Login && x.Password == model.Password);
         }
 
