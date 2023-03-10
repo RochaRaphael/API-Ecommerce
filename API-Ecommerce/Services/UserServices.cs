@@ -146,7 +146,7 @@ namespace API_Ecommerce.Services
             int hashSize = 32; // Define o tamanho do hash em bytes
 
             var salt = new byte[saltSize]; // Cria um array de bytes para o salt
-            var rng = new RNGCryptoServiceProvider(); // Cria um gerador de números aleatórios criptográficos
+            var rng = RandomNumberGenerator.Create(); // Cria um gerador de números aleatórios criptográficos CNG
             rng.GetBytes(salt); // Gera um salt aleatório usando o RNG criptográfico
 
             var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password)); // Cria um objeto Argon2id usando a senha como entrada
