@@ -2,6 +2,7 @@
 using API_Ecommerce.Models;
 using API_Ecommerce.Services;
 using API_Ecommerce.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Ecommerce.Controllers
@@ -37,6 +38,7 @@ namespace API_Ecommerce.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("v1/newproduct/")]
         public async Task<IActionResult> RegisterProduct(
             [FromBody] NewProductViewModel model

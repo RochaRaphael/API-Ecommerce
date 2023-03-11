@@ -1,6 +1,8 @@
 ﻿using API_Ecommerce.Extensions;
+using API_Ecommerce.Models;
 using API_Ecommerce.Services;
 using API_Ecommerce.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Ecommerce.Controllers
@@ -14,6 +16,8 @@ namespace API_Ecommerce.Controllers
             this.userServices = userService;
         }
 
+
+        [Authorize(Role = "boss")]
         [HttpGet("v1/accounts/{id:int}")]
         public async Task<IActionResult> FindUserById(
             [FromRoute] int id
@@ -49,10 +53,10 @@ namespace API_Ecommerce.Controllers
             {
                 var response = await userServices.RegisterUserAsync(model);
 
-                if (response.Success)
-                    return Ok(response.Message);
+                if (response.Data != null)
+                    return Ok("Successfully registered user");
 
-                return StatusCode(401, response.Message);
+                return StatusCode(401, "User already exists");
             }
             catch
             {
@@ -72,10 +76,10 @@ namespace API_Ecommerce.Controllers
             try
             {
                 var response = await userServices.LoginAsync(model);
-                if (response.Success)
-                    return Ok(response.Message);
+                if (response.Data != null)
+                    return Ok(response.Data.LastToken);
                 else
-                    return StatusCode(401, new ResultViewModel<string>(response.Message));
+                    return StatusCode(401, new ResultViewModel<string>(response.Errors));
 
 
             }
