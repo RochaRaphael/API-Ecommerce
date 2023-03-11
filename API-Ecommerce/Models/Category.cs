@@ -7,6 +7,6 @@
         public string Url { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }
-        public List<Product> Products { get; set; }
+        public IList<Product> Products { get; set; }
     }
 }

@@ -14,6 +14,7 @@
         public bool Deleted { get; set; }
         public string Salt { get; set; }
 
-        public List<Order> Orders { get; set; }
+        public IList<Order> Orders { get; set; }
+        public IList<Role>? Roles { get; set; } = new List<Role>();
     }
 }
