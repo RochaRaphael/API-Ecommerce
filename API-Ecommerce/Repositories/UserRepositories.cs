@@ -18,7 +18,10 @@ namespace API_Ecommerce.Repositories
         {
             return await context
                 .Users
+                .AsNoTracking()
+                .Include(x => x.Roles)
                 .FirstOrDefaultAsync(x => x.Id == id);
+
         }
         public async Task RegisterUserAsync(User newUser)
         {
@@ -42,25 +45,15 @@ namespace API_Ecommerce.Repositories
         {
             return await context
                  .Users
-                 .AsNoTracking()
+                 .Include(x => x.Roles)
                  .FirstOrDefaultAsync(x => x.Login == model.Login && x.Password == model.Password);
         }
 
-        public async Task<bool> InsertLasTokenAsync(User login)
+        public async Task InsertLastTokenAsync(User user)
         {
-            try
-            {
-                context.Users.Update(login);
+                context.Users.Update(user);
                 await context.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-
         }
-
         public async Task UpdateUserAsync(NewUserViewModel updateUser, int userId)
         {
             var user = await context.Users.FindAsync(userId);
