@@ -1,4 +1,6 @@
-﻿namespace API_Ecommerce.ViewModels
+﻿using API_Ecommerce.Models;
+
+namespace API_Ecommerce.ViewModels
 {
     public class ShowUserViewModel
     {
@@ -7,6 +9,7 @@
         public string Login { get; set; }
         public string Email { get; set; }
         public bool Active { get; set; }
+        public List<string>? Roles { get; set; }
         public bool Deleted { get; set; }
     }
 }

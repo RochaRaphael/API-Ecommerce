@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using API_Ecommerce.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace API_Ecommerce.ViewModels
 {
@@ -13,6 +14,7 @@ namespace API_Ecommerce.ViewModels
         public string Email { get; set; }
         [Required(ErrorMessage = "Enter the senha")]
         public string Password { get; set; }
+        public List<string> Roles { get; set; }
 
         public string? Salt { get; set; }
     }
