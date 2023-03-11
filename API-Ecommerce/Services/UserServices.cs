@@ -16,9 +16,16 @@ namespace API_Ecommerce.Services
     public class UserServices
     {
         private readonly UserRepositories userRepositories;
-        public UserServices(UserRepositories userRepositories)
+        private readonly RoleRepositories roleRepositories;
+        private readonly RoleServices roleServices;
+        private readonly TokenService tokenService;
+
+        public UserServices(UserRepositories userRepositories, RoleRepositories roleRepositories, RoleServices roleServices, TokenService tokenService)
         {
             this.userRepositories = userRepositories;
+            this.roleRepositories = roleRepositories;
+            this.roleServices = roleServices;
+            this.tokenService = tokenService;
         }
 
         public async Task<ShowUserViewModel> GetByIdAsync(int id)
@@ -29,55 +36,75 @@ namespace API_Ecommerce.Services
                 if (user == null)
                     return null;
 
-                return new ShowUserViewModel
+                var showUser =  new ShowUserViewModel
                 {
                     Id = user.Id,
                     Name = user.Name,
                     Login = user.Login,
                     Email = user.Email,
                     Active = user.Active,
-                    Deleted = user.Deleted
-                    
+                    Deleted = user.Deleted,
                 };
+                List<string> rolesList = new List<string>();
+                foreach (var role in user.Roles)
+                {
+                    rolesList.Add(role.Name);
+                }
+                showUser.Roles = rolesList;
+
+                return showUser;
             }
             catch
             {
                 return null;
             }
         }
-        public async Task<ResponseViewModel> RegisterUserAsync(NewUserViewModel model)
+        public async Task<ResultViewModel<User>> RegisterUserAsync(NewUserViewModel model)
         {
             try
             {
+                List<Role>? rolesList = new List<Role>();
                 if (await userRepositories.UserExistsAsync(model.Login))
-                    return new ResponseViewModel { Success = false, Message = "This user already exists" };
+                    return new ResultViewModel<User>("This user already exists");
+
+                await roleServices.RegisterRoleListAsync(model.Roles);
+                var roleList = await roleRepositories.GetListByNamesAsync(model.Roles);
+                
 
                 var hashSalt = GenerateHash(model.Password);
                 model.Password = hashSalt.Hash;
                 model.Salt = hashSalt.Salt;
+
+
                 var newUser = new User
                 {
                     Name = model.Name,
                     Login = model.Login,
                     Email = model.Email,
-                    Password = hashSalt.Hash,
+                    Password = hashSalt.Hash, 
                     Salt = hashSalt.Salt,
                     Active = true,
                     Deleted = false,
-                    VerificationKey = Guid.NewGuid().ToString()
+                    VerificationKey = Guid.NewGuid().ToString(),
+                    Roles = new List<Role>()
                 };
+                foreach (var role in roleList)
+                {
+                    newUser.Roles.Add(role);
+                }
+
                 await userRepositories.RegisterUserAsync(newUser);
-                return new ResponseViewModel { Success = true, Message = "User successfully created"};
+                return new ResultViewModel<User>(newUser);
             }
             catch (DbUpdateException)
             {
-                return new ResponseViewModel { Success = false, Message = "94X63 - Server failure" };
+                return new ResultViewModel<User>("94X63 - Server failure");
             }
         }
 
         
 
-        public async Task<ResponseViewModel> LoginAsync(LoginViewModel model)
+        public async Task<ResultViewModel<User>> LoginAsync(LoginViewModel model)
         {
             try
             {
@@ -86,19 +113,17 @@ namespace API_Ecommerce.Services
 
                 var login = await userRepositories.CorrectLoginAsync(model);
 
-                if(login == null)
-                    return new ResponseViewModel { Success = false, Message = "Login or password is wrong" };
+                if (login == null)
+                    return new ResultViewModel<User>("Login or password is wrong");
 
+               login.LastToken = tokenService.GenerateToken(login);
+               await userRepositories.InsertLastTokenAsync(login);
 
-                //login.LastToken = tokenService.GenerateToken(login).ToString();
-                var token = userRepositories.InsertLasTokenAsync(login);
-                return new ResponseViewModel { Success = true, Message = "login.LastToken" };
-
-
+               return new ResultViewModel<User>(login);
             }
             catch
             {
-                return new ResponseViewModel { Success = false, Message = "22X08 - Server failure" };
+                return new ResultViewModel<User>("22X08 - Server failure");
             }
         }
 
@@ -167,7 +192,6 @@ namespace API_Ecommerce.Services
                                                Salt = Convert.ToBase64String(salt) };
             
             return hashSalt; // Retorna o objeto Password
-
         }
 
 
