@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace API_Ecommerce.Extensions
 {
-    public static class LoginClaimsExtension
+    public static class RoleClaimsExtension
     {
         public static IEnumerable<Claim> GetClaims(this User user)
         {
