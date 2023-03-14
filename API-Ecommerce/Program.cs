@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+ConfigureAuthentication(builder);
 ConfigureMvc(builder);
 ConfigureServices(builder);
 
