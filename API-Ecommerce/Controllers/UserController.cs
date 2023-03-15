@@ -17,7 +17,6 @@ namespace API_Ecommerce.Controllers
         }
 
 
-        [Authorize(Role = "boss")]
         [HttpGet("v1/accounts/{id:int}")]
         public async Task<IActionResult> FindUserById(
             [FromRoute] int id

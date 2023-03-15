@@ -3,6 +3,7 @@ using API_Ecommerce.Extensions;
 using API_Ecommerce.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using API_Ecommerce.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API_Ecommerce.Controllers
 {
@@ -37,6 +38,7 @@ namespace API_Ecommerce.Controllers
             }
         }
 
+        [Authorize(Roles = "admin, boss")]
         [HttpPost("v1/newcategory/")]
         public async Task<IActionResult> RegisterCategory(
             [FromBody] string categoryName
@@ -61,6 +63,7 @@ namespace API_Ecommerce.Controllers
             }
         }
 
+        [Authorize(Roles = "admin, boss")]
         [HttpPut("v1/category/update/{id:int}")]
         public async Task<IActionResult> UpdateCategory(
             [FromRoute] int id,
@@ -86,6 +89,7 @@ namespace API_Ecommerce.Controllers
             }
         }
 
+        [Authorize(Roles = "admin, boss")]
         [HttpDelete("v1/category/delete/{id:int}")]
         public async Task<IActionResult> DeleteCategoryAsync(
             [FromRoute] int id)

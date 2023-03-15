@@ -38,7 +38,7 @@ namespace API_Ecommerce.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin, boss")]
         [HttpPost("v1/newproduct/")]
         public async Task<IActionResult> RegisterProduct(
             [FromBody] NewProductViewModel model
@@ -64,6 +64,7 @@ namespace API_Ecommerce.Controllers
 
         }
 
+        [Authorize(Roles = "admin, boss")]
         [HttpPut("v1/product/update/{id:int}")]
         public async Task<IActionResult> UpdateProduct(
             [FromRoute] int id,
@@ -88,6 +89,7 @@ namespace API_Ecommerce.Controllers
             }
         }
 
+        [Authorize(Roles = "admin, boss")]
         [HttpDelete("v1/product/delete/{id:int}")]
         public async Task<IActionResult> DeleteProductAsync(
             [FromRoute] int id)
