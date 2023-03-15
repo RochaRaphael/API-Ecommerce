@@ -4,25 +4,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_Ecommerce.Repositories
 {
-    public class ItemOrderRepositories
+    public class OrderRepositories
     {
         private readonly DataContext context;
 
-        public ItemOrderRepositories(DataContext context)
+        public OrderRepositories(DataContext context)
         {
             this.context = context;
         }
 
-        public async Task<ItemOrder> GetByIdAsync(int id)
+        public async Task<Order> GetByIdAsync(int id)
         {
             return await context
-                .ItemOrders
+                .Orders
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task RegisterItemOrderAsync(ItemOrder newItemOrder)
+        public async Task RegisterOrderAsync(Order newOrder)
         {
-            await context.ItemOrders.AddAsync(newItemOrder);
+            await context.Orders.AddAsync(newOrder);
             await context.SaveChangesAsync();
         }
     }
