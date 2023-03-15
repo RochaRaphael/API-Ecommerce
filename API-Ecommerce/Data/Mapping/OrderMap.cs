@@ -27,21 +27,7 @@ namespace API_Ecommerce.Data.Mapping
                 .WithMany(x => x.Orders)
                 .HasConstraintName("FK_Order_User");
 
-            builder
-               .HasMany(x => x.Products)
-               .WithMany(x => x.Orders)
-               .UsingEntity<Dictionary<string, object>>(
-                   "PedidoItem",
-                   order => order
-                       .HasOne<Product>()
-                       .WithMany()
-                       .HasForeignKey("OrderId")
-                       .HasConstraintName("FK_Order_ProductId"),
-                    product => product
-                       .HasOne<Order>()
-                       .WithMany()
-                       .HasForeignKey("ProductId")
-                       .HasConstraintName("FK_Product_OrderId"));
+            
         }
     }
 }
