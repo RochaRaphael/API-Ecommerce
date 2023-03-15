@@ -11,6 +11,6 @@
         public bool Deleted { get; set; }
 
 
-        public IList<Order> Orders { get; set; }
+        public IList<ItemOrder> ItemOrders { get; set; }
     }
 }
