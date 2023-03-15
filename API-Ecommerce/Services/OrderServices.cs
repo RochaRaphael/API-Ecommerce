@@ -17,27 +17,35 @@ namespace API_Ecommerce.Services
             this.itemOrderServices = itemOrderServices;
         }
 
-        public async Task<Order> GetByIdAsync(int id)
+        public async Task<ResultViewModel<List<ShowOrderViewModel>>> GetListByUserIdAsync(int id)
         {
             try
             {
-                var order = await orderRepositories.GetByIdAsync(id);
-                if (order == null)
-                    return null;
+                List<ShowOrderViewModel> orderList = new List<ShowOrderViewModel>();
+                var orders = await orderRepositories.GetListByUserAsync(id);
+                foreach (var item in orders)
+                {
+                    var order = new ShowOrderViewModel
+                    {
+                        OrderDate = item.OrderDate,
+                        ItemOrders = item.ItemOrders,
+                    };
+                    orderList.Add(order);
+                }
 
-                return order;
+                return new ResultViewModel<List<ShowOrderViewModel>>(orderList);
             }
             catch
             {
-                return null;
+                return new ResultViewModel<List<ShowOrderViewModel>>("17X10 - Server failure");
             }
         }
 
-        public async Task<ResultViewModel<bool>> RegisterOrderAsync(NewOrderViewModel model)
+        public async Task<ResultViewModel<bool>> RegisterOrderAsync(List<NewItemOrderViewModel> model, int userId)
         {
             try
             {
-                var user = await userRepositories.GetByIdAsync(model.UserId);
+                var user = await userRepositories.GetByIdAsync(userId);
                 var newOrder = new Order
                 {
                     User = user
@@ -46,7 +54,7 @@ namespace API_Ecommerce.Services
                 await orderRepositories.RegisterOrderAsync(newOrder);
                 var order = await orderRepositories.GetLastOrderAsync();
 
-                await itemOrderServices.RegisterItemOrderListAsync(model.Items, order);
+                await itemOrderServices.RegisterItemOrderListAsync(model, order);
                 return new ResultViewModel<bool>(true);
                 
             }

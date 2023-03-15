@@ -19,6 +19,14 @@ namespace API_Ecommerce.Repositories
                 .Orders
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+        public async Task<List<Order>> GetListByUserAsync(int id)
+        {
+            return await context
+                .Orders
+                .AsNoTracking()
+                .Where(x => x.User.Id == id)
+                .ToListAsync();
+        }
         public async Task<Order> GetLastOrderAsync()
         {
             return await context
