@@ -37,23 +37,20 @@ namespace API_Ecommerce.Controllers
             }
         }
 
-        [HttpPost("v1/neworder/{id:int}")]
+        [HttpPost("v1/neworder/")]
         public async Task<IActionResult> RegisterProduct(
-            [FromRoute] int id,
-            [FromBody] List<NewItemOrderViewModel> model
+            [FromBody] NewOrderViewModel model
             )
         {
-
             if (!ModelState.IsValid)
                 return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
 
             try
             {
-                var result = await orderServices.RegisterOrderAsync(model, id);
+                var result = await orderServices.RegisterOrderAsync(model.Items, model.UserID);
 
-                if (result.Data == null)
-                    return StatusCode(401, result.Errors);
-
+                if (result.Data == false)
+                    return StatusCode(401, "Server failure");
 
                 return Ok("Registered order");
             }

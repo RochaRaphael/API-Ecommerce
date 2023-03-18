@@ -9,12 +9,10 @@ namespace API_Ecommerce.Services
     {
         private readonly ItemOrderRepositories itemOrderRepositories;
         private readonly ProductRepositories productRepositories;
-        private readonly OrderServices orderServices;
         
-        public ItemOrderServices(ItemOrderRepositories itemOrderRepositories, OrderServices orderRServices, ProductRepositories productRepositorie)
+        public ItemOrderServices(ItemOrderRepositories itemOrderRepositories, ProductRepositories productRepositorie)
         {
             this.itemOrderRepositories = itemOrderRepositories;
-            this.orderServices = orderServices;
             this.productRepositories = productRepositorie;
 
         }
@@ -59,7 +57,7 @@ namespace API_Ecommerce.Services
                 {
                     await itemOrderRepositories.RegisterItemOrderAsync(item);
                 }
-                
+
 
                 return new ResultViewModel<List<ItemOrder>>(listToSave);
 

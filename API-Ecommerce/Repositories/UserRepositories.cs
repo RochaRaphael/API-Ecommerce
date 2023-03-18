@@ -23,6 +23,23 @@ namespace API_Ecommerce.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
 
         }
+
+        public async Task<User> GetByLoginAsync(string login)
+        {
+            return await context
+                 .Users
+                 .AsNoTracking()
+                 .FirstOrDefaultAsync(x => x.Login == login);
+        }
+
+        public async Task<User> GetByIdToRegisterAsync(int id)
+        {
+            return await context
+                .Users
+                .Include(x => x.Roles)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+        }
         public async Task RegisterUserAsync(User newUser)
         {
             await context.Users.AddAsync(newUser);
@@ -33,14 +50,7 @@ namespace API_Ecommerce.Repositories
         {
             return await Task.FromResult(context.Users.Any(x => x.Login == login));
         }
-        public async Task<User> GetByLoginAsync(string login)
-        {
-            return await context
-                 .Users
-                 .AsNoTracking()
-                 .FirstOrDefaultAsync(x => x.Login == login);
-        }
-
+        
             public async Task<User> CorrectLoginAsync(LoginViewModel model)
         {
             return await context

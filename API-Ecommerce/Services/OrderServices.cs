@@ -10,9 +10,9 @@ namespace API_Ecommerce.Services
         private readonly OrderRepositories orderRepositories;
         private readonly UserRepositories userRepositories;
         private readonly ItemOrderServices itemOrderServices;
-        public OrderServices(OrderRepositories OrderRepositories, UserRepositories userRepositories, ItemOrderServices itemOrderServices)
+        public OrderServices(OrderRepositories orderRepositories, UserRepositories userRepositories, ItemOrderServices itemOrderServices)
         {
-            this.orderRepositories = OrderRepositories;
+            this.orderRepositories = orderRepositories;
             this.userRepositories = userRepositories;
             this.itemOrderServices = itemOrderServices;
         }
@@ -45,7 +45,7 @@ namespace API_Ecommerce.Services
         {
             try
             {
-                var user = await userRepositories.GetByIdAsync(userId);
+                var user = await userRepositories.GetByIdToRegisterAsync(userId);
                 var newOrder = new Order
                 {
                     User = user
@@ -60,7 +60,7 @@ namespace API_Ecommerce.Services
             }
             catch (DbUpdateException)
             {
-                return new ResultViewModel<bool>("27X15 - Server failure");
+                return new ResultViewModel<bool>(false);
             }
         }
 

@@ -88,5 +88,8 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddScoped<ProductServices>();
     builder.Services.AddScoped<RoleRepositories>();
     builder.Services.AddScoped<RoleServices>();
-
+    builder.Services.AddScoped<OrderRepositories>();
+    builder.Services.AddScoped<OrderServices>();
+    builder.Services.AddScoped<ItemOrderRepositories>();
+    builder.Services.AddScoped<ItemOrderServices>();
 }
