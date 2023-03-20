@@ -1,5 +1,6 @@
 ﻿using API_Ecommerce.Models;
 using API_Ecommerce.Repositories;
+using API_Ecommerce.Services.Caching;
 using API_Ecommerce.ViewModels;
 using Konscious.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
@@ -19,19 +20,27 @@ namespace API_Ecommerce.Services
         private readonly RoleRepositories roleRepositories;
         private readonly RoleServices roleServices;
         private readonly TokenService tokenService;
+        private readonly ICachingService cache;
 
-        public UserServices(UserRepositories userRepositories, RoleRepositories roleRepositories, RoleServices roleServices, TokenService tokenService)
+        public UserServices(UserRepositories userRepositories, RoleRepositories roleRepositories, RoleServices roleServices, TokenService tokenService, ICachingService cache)
         {
             this.userRepositories = userRepositories;
             this.roleRepositories = roleRepositories;
             this.roleServices = roleServices;
             this.tokenService = tokenService;
+            this.cache = cache;
         }
 
         public async Task<ShowUserViewModel> GetByIdAsync(int id)
         {
             try
             {
+                var userCache = await cache.GetAsync(id.ToString());
+                if (userCache != null)
+                    var user2 = JsonConvert.DeserializeObject<User>(userCache);
+
+
+
                 var user = await userRepositories.GetByIdAsync(id);
                 if (user == null)
                     return null;

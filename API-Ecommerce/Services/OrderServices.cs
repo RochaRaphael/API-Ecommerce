@@ -22,7 +22,7 @@ namespace API_Ecommerce.Services
             try
             {
                 List<ShowOrderViewModel> orderList = new List<ShowOrderViewModel>();
-                var orders = await orderRepositories.GetListByUserAsync(id);
+                var orders = await orderRepositories.GetListByUserAsync(id, 1, 25);
                 foreach (var item in orders)
                 {
                     var order = new ShowOrderViewModel
