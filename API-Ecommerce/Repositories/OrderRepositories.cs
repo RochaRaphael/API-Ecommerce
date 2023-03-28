@@ -19,13 +19,15 @@ namespace API_Ecommerce.Repositories
                 .Orders
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
-        public async Task<List<Order>> GetListByUserAsync(int id)
-        {
+        public async Task<List<Order>> GetListByUserAsync(int id,int page, int pageSize)
+        {       
             return await context
-                .Orders
-                .AsNoTracking()
-                .Where(x => x.User.Id == id)
-                .ToListAsync();
+                .Orders 
+                .AsNoTracking() 
+                .Where(x => x.User.Id == id) 
+                .Skip(page * pageSize) 
+                .Take(pageSize) 
+                .ToListAsync(); 
         }
         public async Task<Order> GetLastOrderAsync()
         {
