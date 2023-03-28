@@ -2,6 +2,7 @@ using API_Ecommerce;
 using API_Ecommerce.Data;
 using API_Ecommerce.Repositories;
 using API_Ecommerce.Services;
+using API_Ecommerce.Services.Caching;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -92,4 +93,12 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddScoped<OrderServices>();
     builder.Services.AddScoped<ItemOrderRepositories>();
     builder.Services.AddScoped<ItemOrderServices>();
+
+    builder.Services.AddScoped<ICachingService, CachingService>();
+
+    builder.Services.AddStackExchangeRedisCache(x =>
+    {
+        x.InstanceName = "instance";
+        x.Configuration = "localhost:6379";
+    });
 }
