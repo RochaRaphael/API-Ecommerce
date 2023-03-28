@@ -4,6 +4,7 @@ using API_Ecommerce.Services.Caching;
 using API_Ecommerce.ViewModels;
 using Konscious.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -35,16 +36,18 @@ namespace API_Ecommerce.Services
         {
             try
             {
+                var user = new User();
                 var userCache = await cache.GetAsync(id.ToString());
-                if (userCache != null)
-                    var user2 = JsonConvert.DeserializeObject<User>(userCache);
-
-
-
-                var user = await userRepositories.GetByIdAsync(id);
+                if (userCache == null)
+                    user = await userRepositories.GetByIdAsync(id);
+                else
+                    user = JsonConvert.DeserializeObject<User>(userCache);
+                
+                
                 if (user == null)
                     return null;
 
+                await cache.SetAsync(id.ToString(), JsonConvert.SerializeObject(user));
                 var showUser =  new ShowUserViewModel
                 {
                     Id = user.Id,

@@ -1,6 +1,7 @@
 ﻿using API_Ecommerce.Extensions;
 using API_Ecommerce.Models;
 using API_Ecommerce.Services;
+using API_Ecommerce.Services.Caching;
 using API_Ecommerce.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ namespace API_Ecommerce.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserServices userServices;
-        public UserController(UserServices userService)
+        public UserController(UserServices userService, ICachingService cache)
         {
             this.userServices = userService;
         }
