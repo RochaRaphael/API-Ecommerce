@@ -1,7 +1,9 @@
 ﻿using API_Ecommerce.Models;
 using API_Ecommerce.Repositories;
+using API_Ecommerce.Services.Caching;
 using API_Ecommerce.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace API_Ecommerce.Services
 {
@@ -10,11 +12,13 @@ namespace API_Ecommerce.Services
         private readonly ProductRepositories productRepositories;
         private readonly CategoryRepositories categoryRepositories;
         private readonly CategoryServices categoryServices;
-        public ProductServices(ProductRepositories productRepositories, CategoryRepositories categoryRepositories, CategoryServices categoryServices)
+        private readonly ICachingService cache;
+        public ProductServices(ProductRepositories productRepositories, CategoryRepositories categoryRepositories, CategoryServices categoryServices, ICachingService cache)
         {
             this.productRepositories = productRepositories;
             this.categoryRepositories = categoryRepositories;
             this.categoryServices = categoryServices;
+            this.cache = cache;
         }
 
 
@@ -23,11 +27,24 @@ namespace API_Ecommerce.Services
         {
             try
             {
-                var user = await productRepositories.GetByIdAsync(id);
-                if (user == null)
-                    return null;
+                Product? product;
 
-                return user;
+                var productCache = await cache.GetAsync(id.ToString());
+                if (productCache != null)
+                {
+                    product = JsonConvert.DeserializeObject<Product>(productCache);
+                    return product;
+                    
+                }     
+                else
+                {
+                    product = await productRepositories.GetByIdAsync(id);
+                    if (product == null)
+                        return null;
+
+                    await cache.SetAsync(id.ToString(), JsonConvert.SerializeObject(product));
+                    return product;
+                } 
             }
             catch
             {
