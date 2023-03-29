@@ -36,16 +36,20 @@ namespace API_Ecommerce.Services
         {
             try
             {
-                var user = new User();
+                User? user;
+
                 var userCache = await cache.GetAsync(id.ToString());
-                if (userCache == null)
-                    user = await userRepositories.GetByIdAsync(id);
-                else
+                if (userCache != null)
+                {
                     user = JsonConvert.DeserializeObject<User>(userCache);
-                
-                
-                if (user == null)
-                    return null;
+                    if (user == null)
+                        return null;
+                }                 
+                else
+                {
+                    user = await userRepositories.GetByIdAsync(id);
+                }
+                    
 
                 await cache.SetAsync(id.ToString(), JsonConvert.SerializeObject(user));
                 var showUser =  new ShowUserViewModel
