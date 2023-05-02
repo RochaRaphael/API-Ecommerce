@@ -17,9 +17,13 @@ ConfigureMvc(builder);
 ConfigureServices(builder);
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 LoadConfiguration(app);
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -80,6 +84,7 @@ void ConfigureServices(WebApplicationBuilder builder)
         options =>
             options.UseSqlServer(connectionString));
     builder.Services.AddTransient<TokenService>();
+
 
     builder.Services.AddScoped<UserRepositories>();
     builder.Services.AddScoped<UserServices>();
