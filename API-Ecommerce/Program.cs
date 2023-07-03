@@ -29,6 +29,18 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+
+if (app.Environment.IsDevelopment())
+{
+    Console.WriteLine("I'm in development environment!");
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+if (app.Environment.IsProduction())
+{
+    Console.WriteLine("I'm in production environment!");
+}
+
 app.Run();
 
 void LoadConfiguration(WebApplication app)
