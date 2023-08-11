@@ -29,6 +29,19 @@ namespace API_Ecommerce.Services
             }
         }
 
+        public async Task<ResultViewModel<List<Category>>> GetListAsync()
+        {
+            try
+            {
+                var categories = await categoryRepositories.GetListAsync();
+                return new ResultViewModel<List<Category>>(categories);
+            }
+            catch (Exception ex)
+            {
+                return new ResultViewModel<List<Category>>("49X82 - Server failure");
+            }
+        }
+
 
         public async Task<ResultViewModel<Category>> RegisterCategoryAsync(string name)
         {
