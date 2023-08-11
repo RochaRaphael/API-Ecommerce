@@ -20,7 +20,7 @@ namespace API_Ecommerce.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<Category>> GetListAsync(int id)
+        public async Task<List<Category>> GetListAsync()
         {
             return await context
                 .Categories
