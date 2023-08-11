@@ -38,7 +38,7 @@ namespace API_Ecommerce.Controllers
             }
         }
 
-        [Authorize(Roles = "admin, boss")]
+        //[Authorize(Roles = "admin, boss")]
         [HttpPost("v1/newcategory/")]
         public async Task<IActionResult> RegisterCategory(
             [FromBody] string categoryName

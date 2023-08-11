@@ -45,6 +45,7 @@ namespace API_Ecommerce.Services
                     Deleted = false
                 };
                 await categoryRepositories.RegisterCategoryAsync(newCategory);
+
                 return new ResultViewModel<Category>(newCategory);
 
             }

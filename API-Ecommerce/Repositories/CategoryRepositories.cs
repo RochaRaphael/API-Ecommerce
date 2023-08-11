@@ -20,6 +20,14 @@ namespace API_Ecommerce.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<List<Category>> GetListAsync(int id)
+        {
+            return await context
+                .Categories
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
         public async Task RegisterCategoryAsync(Category newCategory)
         {
             await context.Categories.AddAsync(newCategory);
