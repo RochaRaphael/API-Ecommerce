@@ -38,6 +38,26 @@ namespace API_Ecommerce.Controllers
             }
         }
 
+        [HttpGet("v1/category/list")]
+        public async Task<IActionResult> GetListCategory()
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
+
+            try
+            {
+                var categories = await categoryServices.GetListAsync();
+                if (categories == null)
+                    return NotFound("Category not found");
+
+                return Ok(categories);
+            }
+            catch
+            {
+                return StatusCode(500, new ResultViewModel<string>("88X07 - Server failure"));
+            }
+        }
+
         //[Authorize(Roles = "admin, boss")]
         [HttpPost("v1/newcategory/")]
         public async Task<IActionResult> RegisterCategory(
